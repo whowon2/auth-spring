@@ -1,0 +1,31 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_PASSWORD: "pg123"
+    ports:
+      - "5433:5432"
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "a@a.com"
+      PGADMIN_DEFAULT_PASSWORD: "pg123"
+    ports:
+      - "15432:80"
+    depends_on:
+      - postgres
+
+  app:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: pg123
+    ports:
+      - "8080:8080"
